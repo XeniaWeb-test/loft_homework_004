@@ -6,8 +6,8 @@ use Interfaces\RateInterface;
 
 abstract class AbstractRate implements RateInterface
 {
-    protected $priceDistance;
-    protected $priceTime;
+//    protected $priceDistance;
+//    protected $priceTime;
     protected $age;
     protected $distance;
     protected $duration;
@@ -36,17 +36,5 @@ abstract class AbstractRate implements RateInterface
             $this->youngFactor = true;
         }
         echo "В добрый путь!";
-    }
-
-    public function calculatePrice()
-    {
-        $totalPrise = $this->distance * $this->priceDistance + $this->duration * $this->priceTime;
-        if ($this->youngFactor) {
-            $totalPrise *= self::YOUNG_INDEX;
-        }
-        if ($this->needDriver) {
-            $totalPrise += self::DRIVER_PRICE;
-        }
-        echo 'Оплатите в кассу ' . $totalPrise . ' рублей.';
     }
 }
