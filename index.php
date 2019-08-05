@@ -1,6 +1,10 @@
 <?php
-require_once('src/functions.php');
+include "src/Interfaces/RateInterface.php";
+include "src/Classes/AbstractRate.php";
+include "src/Classes/RateBase.php";
 
-echo '<pre>';
+use Classes\RateBase;
 
-echo '</pre>';
+$order = new RateBase(19, 20,20, true);
+$order->checkAge();
+$order->calculatePrice();
