@@ -1,40 +1,40 @@
 <?php
 
-namespace Classes;
+namespace App\Classes;
 
-use Interfaces\RateInterface;
+use App\Interfaces\Age;
+use App\Interfaces\RateInterface;
+use Exception;
 
 abstract class AbstractRate implements RateInterface
 {
-//    protected $priceDistance;
-//    protected $priceTime;
     protected $age;
     protected $distance;
     protected $duration;
     protected $needDriver;
     protected $youngFactor;
-
-//    public function __construct(int $age, int $distance, int $duration, bool $needDriver, int $priceDistance, int $priceTime)
     public function __construct(int $age, int $distance, int $duration, bool $needDriver)
     {
-//        $this->priceDistance = $priceDistance;
-//        $this->priceTime = $priceTime;
         $this->age = $age;
+        $this->checkAge();
         $this->distance = $distance;
         $this->duration = $duration;
         $this->needDriver = $needDriver;
     }
 
-    public function checkAge() {
-        if ($this->age < self::MIN_AGE) {
-            echo "Вы слишком молоды, вам нельзя за руль!";
-            die;
-        } elseif ($this->age > self::MAX_AGE) {
-            echo "Вы слишком старый, вам нельзя за руль!";
-            die;
-        } elseif ($this->age < self::YOUNG_AGE) {
+
+    /**
+     * @throws Exception
+     */
+    protected function checkAge() {
+        if ($this->age < Age::MIN) {
+            throw new Exception('Вы слишком молоды, вам нельзя за руль!');
+        }
+        if ($this->age > Age::MAX) {
+            throw new Exception('Вы слишком старый, вам нельзя за руль! Отдыхайте.');
+        }
+        if ($this->age < Age::YOUNG) {
             $this->youngFactor = true;
         }
-        echo "В добрый путь!";
     }
 }
