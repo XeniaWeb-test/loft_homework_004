@@ -13,42 +13,33 @@ class RateBase extends AbstractRate
     /**
      * @return float|int
      */
-
     public function calcPriceDistance()
     {
         $priceDistance = $this->distance * PriceDistance::BASIC;
-
         return $priceDistance;
     }
 
     /**
      * @return float|int
      */
-
     public function calcPriceTime()
     {
         $priceTime = $this->duration * PriceTime::BASIC;
-
         return $priceTime;
     }
 
     /**
      * @return float|int
      */
-
     public function calculatePrice()
     {
-        if ($this->calcPriceDistance() > $this->calcPriceTime()) {
-            $totalPrise = $this->calcPriceDistance();
-        } else {
-            $totalPrise = $this->calcPriceTime();
+        $totalPrice = $this->calcNetPrice();
+
+        if ($this->needGps) {
+            $gps = ceil($this->duration / RecountTime::MINUTE_IN_HOUR) * PriceExtra::GPS;
+            $totalPrice += $gps;
         }
-        if ($this->youngFactor) {
-            $totalPrise *= PriceExtra::YOUNG_INDEX;
-        }
-        if ($this->needDriver) {
-            $totalPrise += PriceExtra::DRIVER;
-        }
-       return $totalPrise;
+        return $totalPrice;
     }
+
 }

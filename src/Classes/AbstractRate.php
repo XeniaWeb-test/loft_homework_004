@@ -3,6 +3,7 @@
 namespace App\Classes;
 
 use App\Interfaces\Age;
+use App\Interfaces\PriceExtra;
 use App\Interfaces\RateInterface;
 use Exception;
 
@@ -12,16 +13,16 @@ abstract class AbstractRate implements RateInterface
     protected $distance;
     protected $duration;
     protected $needDriver;
+    protected $needGps;
     protected $youngFactor;
-    public function __construct(int $age, int $distance, int $duration, bool $needDriver)
+    public function __construct(int $age, int $distance, int $duration, bool $needGps)
     {
         $this->age = $age;
         $this->checkAge();
         $this->distance = $distance;
         $this->duration = $duration;
-        $this->needDriver = $needDriver;
+        $this->needGps = $needGps;
     }
-
 
     /**
      * @throws Exception
@@ -36,5 +37,25 @@ abstract class AbstractRate implements RateInterface
         if ($this->age < Age::YOUNG) {
             $this->youngFactor = true;
         }
+    }
+
+    /**
+     * @return float|int
+     */
+    public function calcNetPrice()
+    {
+        if ($this->calcPriceDistance() > $this->calcPriceTime()) {
+            $netPrise = $this->calcPriceDistance();
+        } else {
+            $netPrise = $this->calcPriceTime();
+        }
+        if ($this->youngFactor) {
+            $netPrise *= PriceExtra::YOUNG_INDEX;
+        }
+        if ($this->needDriver) {
+            $netPrise += PriceExtra::DRIVER;
+        }
+
+        return $netPrise;
     }
 }

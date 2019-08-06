@@ -8,16 +8,41 @@ use App\Interfaces\PriceTime;
 
 class RateDaily extends AbstractRate
 {
+    public function __construct(int $age, int $distance, int $duration, bool $needGps, bool $needDriver)
+    {
+        parent::__construct($age, $distance, $duration, $needGps);
 
+        $this->needDriver = $needDriver;
+    }
+    /**
+     * @return float|int
+     */
+    public function calcPriceDistance()
+    {
+        $priceDistance = $this->distance * PriceDistance::DAILY;
+        return $priceDistance;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function calcPriceTime()
+    {
+        $priceTime = $this->duration * PriceTime::DAILY;
+        return $priceTime;
+    }
+
+    /**
+     * @return float|int
+     */
     public function calculatePrice()
     {
-        $totalPrise = ($this->distance * PriceDistance::DAILY) + ($this->duration * PriceTime::DAILY);
-        if ($this->youngFactor) {
-            $totalPrise *= PriceExtra::YOUNG_INDEX;
+        $totalPrice = $this->calcNetPrice();
+
+        if ($this->needGps) {
+        $gps = ($this->duration * RecountTime::HOUR_IN_DAY) * PriceExtra::GPS;
+            $totalPrice += $gps;
         }
-        if ($this->needDriver) {
-            $totalPrise += PriceExtra::DRIVER;
-        }
-        echo 'Оплатите в кассу ' . $totalPrise . ' рублей.';
+        return $totalPrice;
     }
 }
